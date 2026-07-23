@@ -152,7 +152,7 @@ export default function App() {
     }, 2500);
   };
 
-  const mapsUrl = "https://www.google.com/maps/search/?api=1&query=M534%2B5H,+Hajiawai+Khwaroo,+Sulaymaniyah+Governorate";
+  const mapsUrl = "https://www.google.com/maps/place/35.653970,+45.156908/@35.6539026,45.1567809,18z/data=!3m1!1e3!4m4!3m3!8m2!3d35.6539702!4d45.1569077";
 
   return (
     <div className="min-h-screen bg-neutral-950 flex flex-col items-center justify-center p-2 sm:p-4 text-neutral-800 font-kurdish relative selection:bg-pink-300">
@@ -463,14 +463,14 @@ export default function App() {
                 </div>
 
                 <h3 className="text-xl font-extrabold text-neutral-900 mb-2">لە ماڵی بووک</h3>
-                <p className="text-xs text-neutral-500 mb-4 font-sans dir-ltr">M534+5H, Hajiawai Khwaroo, Sulaymaniyah Governorate</p>
+                <p className="text-xs text-neutral-500 mb-4 font-sans dir-ltr">35.653970, 45.156908 - Hajiawai Khwaroo</p>
 
                 {/* Google Maps Interactive Container */}
                 <div className="w-full h-48 rounded-xl overflow-hidden border border-neutral-200 shadow-inner relative group mb-4">
                   {/* Google Map Embedded Frame */}
                   <iframe 
                     title="Location Map"
-                    src="https://maps.google.com/maps?q=M534%2B5H%2C%20Hajiawai%20Khwaroo%2C%20Sulaymaniyah%20Governorate&t=&z=15&ie=UTF8&iwloc=&output=embed"
+                    src="https://maps.google.com/maps?q=35.653970,45.156908&t=&z=17&ie=UTF8&iwloc=&output=embed"
                     className="w-full h-full border-0 filter saturate-110"
                     loading="lazy"
                   />
