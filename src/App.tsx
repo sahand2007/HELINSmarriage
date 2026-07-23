@@ -342,11 +342,6 @@ export default function App() {
               <span>بە هیواین ساتێکی خۆش بەسەر ببەن</span>
             </div>
 
-            {/* Prepared By Credit in Envelope view */}
-            <div className="absolute bottom-3 text-[11px] text-neutral-400 font-medium">
-              ئامادەکردنی: <span className="text-pink-600 font-semibold">sahand</span>
-            </div>
-
           </div>
         ) : (
           /* ---------------------------------------------------------------------------------- */
@@ -439,25 +434,15 @@ export default function App() {
                 </div>
 
                 {/* Groom & Bride Kurdish Clothes Illustration Card */}
-                <div className="my-6 p-4 rounded-xl bg-gradient-to-br from-pink-50 via-white to-rose-50 border border-pink-200 shadow-md text-center">
-                  <div className="relative w-full h-52 rounded-lg overflow-hidden mb-3 border border-pink-200/80 shadow-inner group">
+                <div className="my-6 p-2 rounded-2xl bg-gradient-to-br from-pink-50 via-white to-rose-50 border border-pink-200/90 shadow-md text-center">
+                  <div className="relative w-full rounded-xl overflow-hidden border border-pink-200/80 shadow-sm">
                     <img 
                       src={kurdishCoupleArt} 
                       alt="ژیلوان و هێلین بە جلی کوردی"
-                      className="w-full h-full object-cover object-top group-hover:scale-105 transition-transform duration-700"
+                      className="w-full h-auto block object-contain"
                     />
-                    <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent flex items-end p-3">
-                      <div className="w-full flex items-center justify-between text-white text-xs font-bold">
-                        <span className="bg-neutral-900/80 px-2.5 py-1 rounded-full border border-neutral-700 backdrop-blur-xs">
-                          👔 ژیلوان (جلی کوردی ڕەش)
-                        </span>
-                        <span className="bg-pink-600/90 px-2.5 py-1 rounded-full border border-pink-400 backdrop-blur-xs">
-                          👗 هێلین (جلی کوردی)
-                        </span>
-                      </div>
-                    </div>
                   </div>
-                  <p className="text-xs text-neutral-600 font-semibold">
+                  <p className="text-xs text-neutral-600 font-semibold pt-2 pb-1">
                     بووک و زاوا بە بەرگی ڕەسەنی کوردی
                   </p>
                 </div>
@@ -643,14 +628,7 @@ export default function App() {
                 </a>
               </div>
 
-              {/* Exact Footer Text Requested: "ئامادەکردنی: sahand" */}
-              <div className="pt-4 border-t border-pink-200/60 text-xs text-neutral-500">
-                <p className="font-semibold text-neutral-700">
-                  ئامادەکردنی: <span className="text-pink-600 font-bold">sahand</span>
-                </p>
-                <p className="text-[10px] text-neutral-400 mt-1">
-                  هەموو مافەکان پارێزراون © ٢٠٢٦
-                </p>
+              <div className="pt-2 border-t border-pink-200/40">
               </div>
 
             </div>
