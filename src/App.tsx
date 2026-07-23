@@ -133,7 +133,7 @@ export default function App() {
     setIsPlaying(prev => !prev);
   };
 
-  const customShareUrl = "https://helinsmarriage.88grill.workers.dev/";
+  const customShareUrl = "https://helen.helensmarriage.workers.dev/";
 
   const copyLink = () => {
     navigator.clipboard.writeText(customShareUrl);
