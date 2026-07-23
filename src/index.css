@@ -1,0 +1,86 @@
+@import "tailwindcss";
+
+@layer base {
+  body {
+    font-family: 'Alexandria', 'Vazirmatn', -apple-system, BlinkMacSystemFont, sans-serif;
+    direction: rtl;
+    background-color: #0d0e12;
+    color: #334155;
+    overflow-x: hidden;
+  }
+}
+
+.font-calligraphy {
+  font-family: 'Amiri', serif;
+}
+
+.font-script {
+  font-family: 'Great Vibes', cursive;
+}
+
+.font-kurdish {
+  font-family: 'Alexandria', 'Vazirmatn', sans-serif;
+}
+
+/* Custom patterned background texture like video */
+.bg-islamic-pattern {
+  background-color: #fdfaf6;
+  background-image: radial-gradient(#f472b6 0.75px, transparent 0.75px), radial-gradient(#f472b6 0.75px, #fdfaf6 0.75px);
+  background-size: 30px 30px;
+  background-position: 0 0, 15px 15px;
+  background-opacity: 0.15;
+}
+
+/* Gold glass glow */
+.gold-glow {
+  box-shadow: 0 10px 30px -10px rgba(244, 114, 182, 0.25), 0 0 15px 0 rgba(234, 179, 8, 0.15);
+}
+
+.card-emboss {
+  background: linear-gradient(145deg, #ffffff, #fcf8f3);
+  box-shadow: 0 12px 35px -8px rgba(244, 114, 182, 0.12), 0 4px 15px rgba(0, 0, 0, 0.03);
+}
+
+/* Envelope flap animations */
+.perspective-1000 {
+  perspective: 1000px;
+}
+
+.transform-style-3d {
+  transform-style: preserve-3d;
+}
+
+.backface-hidden {
+  backface-visibility: hidden;
+}
+
+@keyframes pulse-slow {
+  0%, 100% { transform: scale(1); opacity: 0.9; }
+  50% { transform: scale(1.06); opacity: 1; }
+}
+
+.animate-pulse-slow {
+  animation: pulse-slow 3s infinite ease-in-out;
+}
+
+@keyframes float-petal {
+  0% {
+    transform: translateY(-20px) rotate(0deg) scale(0.8);
+    opacity: 0;
+  }
+  20% {
+    opacity: 0.8;
+  }
+  100% {
+    transform: translateY(100vh) rotate(360deg) scale(1.2);
+    opacity: 0;
+  }
+}
+
+.petal {
+  position: fixed;
+  top: -10%;
+  pointer-events: none;
+  animation: float-petal 10s infinite linear;
+}
+

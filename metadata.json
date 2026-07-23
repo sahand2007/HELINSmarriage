@@ -1,0 +1,6 @@
+{
+  "name": "بانگهێشتنامەی مارەبڕینی ژیلوان و هێلین",
+  "description": "بانگهێشتنامەی دیجیتاڵی مۆدێرن بۆ ئاهەنگی مارەبڕینی ژیلوان و هێلین بە ڕەنگی پەمەیی و نەخشەی گووگڵ و موزیک",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}
