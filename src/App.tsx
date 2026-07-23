@@ -4,6 +4,7 @@
  */
 
 import React, { useState, useEffect } from 'react';
+import kurdishCoupleArt from './assets/images/kurdish_groom_bride_art_1784802229558.jpg';
 import { 
   Heart, 
   MapPin, 
@@ -43,11 +44,13 @@ export default function App() {
   const [rsvpSubmitted, setRsvpSubmitted] = useState(false);
   const [deviceTime, setDeviceTime] = useState('');
 
-  // Update dynamic device time for user's phone clock
+  // Update dynamic device time for user's phone clock (12-hour format)
   useEffect(() => {
     const updateDeviceTime = () => {
       const now = new Date();
-      const hours = String(now.getHours()).padStart(2, '0');
+      let hoursNum = now.getHours() % 12;
+      if (hoursNum === 0) hoursNum = 12;
+      const hours = String(hoursNum).padStart(2, '0');
       const minutes = String(now.getMinutes()).padStart(2, '0');
       setDeviceTime(toKurdishDigits(`${hours}:${minutes}`));
     };
@@ -103,8 +106,10 @@ export default function App() {
     setIsPlaying(prev => !prev);
   };
 
+  const customShareUrl = "https://helinsmarriage.88grill.workers.dev/";
+
   const copyLink = () => {
-    navigator.clipboard.writeText(window.location.href);
+    navigator.clipboard.writeText(customShareUrl);
     setCopied(true);
     setTimeout(() => setCopied(false), 2500);
   };
@@ -391,7 +396,7 @@ export default function App() {
                 <div className="my-6 p-4 rounded-xl bg-gradient-to-br from-pink-50 via-white to-rose-50 border border-pink-200 shadow-md text-center">
                   <div className="relative w-full h-52 rounded-lg overflow-hidden mb-3 border border-pink-200/80 shadow-inner group">
                     <img 
-                      src="/src/assets/images/kurdish_groom_bride_art_1784802229558.jpg" 
+                      src={kurdishCoupleArt} 
                       alt="ژیلوان و هێلین بە جلی کوردی"
                       className="w-full h-full object-cover object-top group-hover:scale-105 transition-transform duration-700"
                     />
@@ -582,7 +587,7 @@ export default function App() {
                 </button>
 
                 <a 
-                  href={`https://api.whatsapp.com/send?text=${encodeURIComponent('بانگهێشتنامەی فەرمی مارەبڕینی ژیلوان و هێلین 💍 ' + window.location.href)}`}
+                  href={`https://api.whatsapp.com/send?text=${encodeURIComponent('بانگهێشتنامەی مارەبڕینی ژیلوان و هێلین 💍 ' + customShareUrl)}`}
                   target="_blank"
                   rel="noopener noreferrer"
                   className="p-2.5 rounded-full bg-emerald-500 text-white shadow-xs hover:bg-emerald-600 transition-all"
