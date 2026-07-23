@@ -24,7 +24,8 @@ import {
   MessageCircle,
   X,
   Play,
-  Pause
+  Pause,
+  ArrowDown
 } from 'lucide-react';
 
 const toKurdishDigits = (str: string | number) => {
@@ -58,6 +59,28 @@ export default function App() {
     const interval = setInterval(updateDeviceTime, 10000);
     return () => clearInterval(interval);
   }, []);
+
+  const [isAutoScrolling, setIsAutoScrolling] = useState(false);
+
+  // Auto-scroll logic: smoothly scrolls down the page step-by-step
+  useEffect(() => {
+    if (!isOpen || !isAutoScrolling) return;
+
+    const scrollInterval = setInterval(() => {
+      const maxScroll = Math.max(
+        document.body.scrollHeight,
+        document.documentElement.scrollHeight
+      ) - window.innerHeight;
+
+      if (window.scrollY >= maxScroll - 15) {
+        setIsAutoScrolling(false); // Stop when reached bottom
+      } else {
+        window.scrollBy({ top: 1.5, behavior: 'smooth' });
+      }
+    }, 40); // Gentle smooth scrolling
+
+    return () => clearInterval(scrollInterval);
+  }, [isOpen, isAutoScrolling]);
 
   // Target event date: July 24, 2026 at 20:00 (8:00 PM)
   const targetDate = new Date('2026-07-24T20:00:00');
@@ -99,6 +122,10 @@ export default function App() {
     setTimeout(() => {
       setIsOpen(true);
       setIsOpening(false);
+      // Automatically start gentle auto-scroll after opening card
+      setTimeout(() => {
+        setIsAutoScrolling(true);
+      }, 800);
     }, 1100);
   };
 
@@ -173,23 +200,42 @@ export default function App() {
           </div>
         </div>
 
-        {/* Floating Sound Controller Button (Exact Match to Video Bottom-Right Yellow/Pink Icon) */}
-        <button
-          onClick={toggleMusic}
-          className="fixed sm:absolute bottom-6 left-6 z-50 bg-gradient-to-r from-amber-400 to-pink-500 text-white p-3 rounded-full shadow-lg hover:scale-110 active:scale-95 transition-all duration-300 flex items-center justify-center border-2 border-white/80 group"
-          title="دەنگ (مۆسیقا)"
-        >
-          {isPlaying ? (
-            <div className="flex items-center gap-1">
-              <span className="w-1 h-3 bg-white animate-bounce rounded-full"></span>
-              <span className="w-1 h-4 bg-white animate-bounce delay-100 rounded-full"></span>
-              <span className="w-1 h-2 bg-white animate-bounce delay-200 rounded-full"></span>
-              <Volume2 className="w-5 h-5 mr-1" />
-            </div>
-          ) : (
-            <VolumeX className="w-5 h-5" />
+        {/* Floating Controls: Sound & Auto-Scroll Button */}
+        <div className="fixed sm:absolute bottom-6 left-6 z-50 flex items-center gap-2">
+          {/* Music Controller */}
+          <button
+            onClick={toggleMusic}
+            className="bg-gradient-to-r from-amber-400 to-pink-500 text-white p-3 rounded-full shadow-lg hover:scale-110 active:scale-95 transition-all duration-300 flex items-center justify-center border-2 border-white/80 group"
+            title="دەنگ (مۆسیقا)"
+          >
+            {isPlaying ? (
+              <div className="flex items-center gap-1">
+                <span className="w-1 h-3 bg-white animate-bounce rounded-full"></span>
+                <span className="w-1 h-4 bg-white animate-bounce delay-100 rounded-full"></span>
+                <span className="w-1 h-2 bg-white animate-bounce delay-200 rounded-full"></span>
+                <Volume2 className="w-5 h-5 mr-1" />
+              </div>
+            ) : (
+              <VolumeX className="w-5 h-5" />
+            )}
+          </button>
+
+          {/* Auto-Scroll Toggle Button (Appears when invitation is opened) */}
+          {isOpen && (
+            <button
+              onClick={() => setIsAutoScrolling(prev => !prev)}
+              className={`px-3.5 py-2.5 rounded-full shadow-lg hover:scale-105 active:scale-95 transition-all duration-300 flex items-center gap-1.5 border-2 border-white/80 text-xs font-bold ${
+                isAutoScrolling 
+                  ? 'bg-rose-500 text-white ring-2 ring-pink-300 animate-pulse' 
+                  : 'bg-white/95 text-neutral-800 hover:bg-pink-50'
+              }`}
+              title="ڕۆشتنی هێواش (Auto Scroll)"
+            >
+              <ArrowDown className={`w-4 h-4 ${isAutoScrolling ? 'animate-bounce text-white' : 'text-pink-500'}`} />
+              <span>{isAutoScrolling ? 'وەستاندنی ڕۆشتن' : 'ڕۆشتنی هێواش'}</span>
+            </button>
           )}
-        </button>
+        </div>
 
         {/* ---------------------------------------------------------------------------------- */}
         {/* SECTION 1: 3D EMBOSSED PINK FLORAL ENVELOPE OPENER (When isOpen === false) */}
