@@ -3,7 +3,7 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
-import React, { useState, useEffect, useRef } from 'react';
+import React, { useState, useEffect } from 'react';
 import { 
   Heart, 
   MapPin, 
@@ -33,6 +33,7 @@ const toKurdishDigits = (str: string | number) => {
 
 export default function App() {
   const [isOpen, setIsOpen] = useState(false);
+  const [isOpening, setIsOpening] = useState(false);
   const [isPlaying, setIsPlaying] = useState(false);
   const [copied, setCopied] = useState(false);
   const [showRsvpModal, setShowRsvpModal] = useState(false);
@@ -54,9 +55,6 @@ export default function App() {
     const interval = setInterval(updateDeviceTime, 10000);
     return () => clearInterval(interval);
   }, []);
-
-  // Audio player reference
-  const audioRef = useRef<HTMLAudioElement | null>(null);
 
   // Target event date: July 24, 2026 at 20:00 (8:00 PM)
   const targetDate = new Date('2026-07-24T20:00:00');
@@ -90,27 +88,19 @@ export default function App() {
   }, []);
 
   const handleOpenEnvelope = () => {
-    setIsOpen(true);
-    // Auto-play audio when envelope opens
-    if (audioRef.current) {
-      audioRef.current.play().then(() => {
-        setIsPlaying(true);
-      }).catch(err => {
-        console.log("Audio autoplay prevented by browser policy:", err);
-      });
-    }
+    if (isOpening || isOpen) return;
+    setIsOpening(true);
+    setIsPlaying(true);
+
+    // Wait 1.1s for flap 3D animation before showing full card
+    setTimeout(() => {
+      setIsOpen(true);
+      setIsOpening(false);
+    }, 1100);
   };
 
   const toggleMusic = () => {
-    if (!audioRef.current) return;
-    if (isPlaying) {
-      audioRef.current.pause();
-      setIsPlaying(false);
-    } else {
-      audioRef.current.play().then(() => {
-        setIsPlaying(true);
-      }).catch(err => console.log(err));
-    }
+    setIsPlaying(prev => !prev);
   };
 
   const copyLink = () => {
@@ -153,14 +143,7 @@ export default function App() {
         ))}
       </div>
 
-      {/* Hidden Audio Element fallback */}
-      <audio 
-        ref={audioRef} 
-        loop 
-        src="https://cdn.pixabay.com/download/audio/2022/05/27/audio_1808fbf07a.mp3?filename=romantic-wedding-acoustic-112191.mp3" 
-      />
-
-      {/* Dynamic YouTube Audio Stream Frame for requested video https://youtu.be/actv-AFgtyM */}
+      {/* Background YouTube Audio Stream Frame for requested video https://youtu.be/actv-AFgtyM */}
       {isPlaying && (
         <iframe 
           className="hidden" 
@@ -216,18 +199,18 @@ export default function App() {
             <div className="text-center mb-8 z-10 animate-fade-in">
               <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-pink-100/80 text-pink-800 text-xs font-semibold mb-3 border border-pink-200 shadow-sm">
                 <Sparkles className="w-3.5 h-3.5 text-pink-600" />
-                <span>بانگهێشتنامەی فەرمی مارەبڕین</span>
+                <span>بانگهێشتنامەی مارەبڕین</span>
               </div>
               <h1 className="text-2xl font-bold text-neutral-800 font-calligraphy tracking-wide">
                 ژیلوان <span className="text-pink-500 text-xl font-sans">❤️</span> هێلین
               </h1>
-              <p className="text-xs text-neutral-500 mt-1">تکایە کلیک لەسەر نامەکە بکە بۆ بازکردنەوە</p>
+              <p className="text-xs text-neutral-500 mt-1">تکایە کلیک لەسەر نامەکە بکە بۆ کردنەوەی</p>
             </div>
 
-            {/* Realistic Embossed Paper Envelope with Pink Floral Relief */}
+            {/* Realistic Embossed Paper Envelope with 4-Flap 3D Unfolding Animation */}
             <div 
               onClick={handleOpenEnvelope}
-              className="w-full max-w-xs h-72 rounded-2xl relative cursor-pointer group shadow-2xl transition-all duration-500 hover:scale-[1.02] active:scale-98 flex items-center justify-center border-2 border-pink-200/80 bg-[#fdfbf8]"
+              className={`w-full max-w-xs h-72 rounded-2xl relative cursor-pointer group shadow-2xl transition-all duration-700 flex items-center justify-center border-2 border-pink-200/80 bg-[#fdfbf8] perspective-1000 ${isOpening ? 'scale-105 opacity-90' : 'hover:scale-[1.02] active:scale-98'}`}
             >
               {/* Embossed Paper Texture Overlay */}
               <div className="absolute inset-0 rounded-2xl opacity-90 overflow-hidden">
@@ -236,35 +219,68 @@ export default function App() {
                   alt="Pink Floral Envelope" 
                   className="w-full h-full object-cover rounded-2xl filter brightness-105 opacity-90 group-hover:scale-105 transition-transform duration-700"
                   onError={(e) => {
-                    // Fallback visual if image load fails
                     (e.target as HTMLElement).style.display = 'none';
                   }}
                 />
               </div>
 
-              {/* Envelope Flap Triangles (SVG 3D Embossed Fold Look) */}
-              <div className="absolute inset-0 pointer-events-none rounded-2xl overflow-hidden">
-                {/* Top Flap */}
-                <svg className="absolute top-0 inset-x-0 w-full h-36 drop-shadow-md text-[#fffcf9]" viewBox="0 0 300 150" fill="currentColor">
-                  <path d="M0,0 L150,110 L300,0 Z" fill="#ffffff" fillOpacity="0.92" stroke="#f472b6" strokeWidth="1" strokeOpacity="0.3" />
-                  {/* Decorative Pink Floral Branches on Flap */}
-                  <path d="M110,25 Q130,45 150,70 Q170,45 190,25" fill="none" stroke="#f472b6" strokeWidth="1.5" strokeDasharray="3 3" opacity="0.6" />
-                </svg>
+              {/* 4 Interactive Unfolding Flaps (Top, Bottom, Left, Right) */}
+              <div className="absolute inset-0 pointer-events-none rounded-2xl overflow-hidden transform-style-3d">
+                
+                {/* Top Flap (Rotates Upwards on click) */}
+                <div 
+                  className={`absolute top-0 inset-x-0 w-full h-36 origin-top transition-transform duration-1000 ease-in-out z-30 ${isOpening ? '-rotate-x-180 opacity-20' : ''}`}
+                >
+                  <svg className="w-full h-full drop-shadow-md text-[#fffcf9]" viewBox="0 0 300 150" fill="currentColor">
+                    <path d="M0,0 L150,110 L300,0 Z" fill="#ffffff" fillOpacity="0.95" stroke="#f472b6" strokeWidth="1" strokeOpacity="0.4" />
+                    <path d="M110,25 Q130,45 150,70 Q170,45 190,25" fill="none" stroke="#f472b6" strokeWidth="1.5" strokeDasharray="3 3" opacity="0.6" />
+                  </svg>
+                </div>
 
-                {/* Bottom Triangle Flap */}
-                <svg className="absolute bottom-0 inset-x-0 w-full h-36 drop-shadow-md" viewBox="0 0 300 150" fill="currentColor">
-                  <path d="M0,150 L150,40 L300,150 Z" fill="#fdf8f4" fillOpacity="0.95" stroke="#f472b6" strokeWidth="1" strokeOpacity="0.2" />
-                </svg>
+                {/* Bottom Flap (Rotates Downwards) */}
+                <div 
+                  className={`absolute bottom-0 inset-x-0 w-full h-36 origin-bottom transition-transform duration-1000 ease-in-out z-20 ${isOpening ? 'rotate-x-180 opacity-20' : ''}`}
+                >
+                  <svg className="w-full h-full drop-shadow-md" viewBox="0 0 300 150" fill="currentColor">
+                    <path d="M0,150 L150,40 L300,150 Z" fill="#fdf8f4" fillOpacity="0.95" stroke="#f472b6" strokeWidth="1" strokeOpacity="0.3" />
+                  </svg>
+                </div>
+
+                {/* Left Flap */}
+                <div 
+                  className={`absolute left-0 inset-y-0 h-full w-36 origin-left transition-transform duration-1000 ease-in-out z-10 ${isOpening ? '-rotate-y-180 opacity-20' : ''}`}
+                >
+                  <svg className="w-full h-full drop-shadow-sm" viewBox="0 0 150 300" fill="currentColor">
+                    <path d="M0,0 L110,150 L0,300 Z" fill="#fdfbf8" fillOpacity="0.9" stroke="#f472b6" strokeWidth="1" strokeOpacity="0.2" />
+                  </svg>
+                </div>
+
+                {/* Right Flap */}
+                <div 
+                  className={`absolute right-0 inset-y-0 h-full w-36 origin-right transition-transform duration-1000 ease-in-out z-10 ${isOpening ? 'rotate-y-180 opacity-20' : ''}`}
+                >
+                  <svg className="w-full h-full drop-shadow-sm" viewBox="0 0 150 300" fill="currentColor">
+                    <path d="M150,0 L40,150 L150,300 Z" fill="#fdfbf8" fillOpacity="0.9" stroke="#f472b6" strokeWidth="1" strokeOpacity="0.2" />
+                  </svg>
+                </div>
+
               </div>
 
+              {/* Inside Card Peek / Golden Sparkle when opening */}
+              {isOpening && (
+                <div className="absolute inset-4 bg-gradient-to-tr from-pink-100 via-rose-50 to-amber-100 rounded-xl shadow-inner z-0 flex items-center justify-center animate-pulse">
+                  <span className="text-pink-600 font-bold font-calligraphy text-lg">بۆنەکە کرایەوە...</span>
+                </div>
+              )}
+
               {/* Center Wax Seal / Heart Button (Click Trigger) */}
-              <div className="z-20 flex flex-col items-center">
+              <div className={`z-40 flex flex-col items-center transition-all duration-500 ${isOpening ? 'scale-0 opacity-0' : 'scale-100 opacity-100'}`}>
                 <div className="w-16 h-16 rounded-full bg-gradient-to-tr from-pink-500 via-rose-400 to-amber-300 text-white flex items-center justify-center shadow-xl ring-4 ring-pink-100 group-hover:scale-110 group-hover:rotate-6 transition-all duration-300">
                   <Heart className="w-8 h-8 fill-white text-white animate-pulse" />
                 </div>
                 <div className="mt-4 px-4 py-1.5 rounded-full bg-white/90 backdrop-blur-md border border-pink-200 text-pink-800 text-xs font-bold shadow-md flex items-center gap-2 group-hover:bg-pink-500 group-hover:text-white transition-all">
                   <Sparkles className="w-3.5 h-3.5 text-amber-400 group-hover:text-white" />
-                  <span>کرانەوەی بانگهێشتنامە</span>
+                  <span>کردنەوەی بانگهێشتنامە</span>
                 </div>
               </div>
             </div>
@@ -294,7 +310,7 @@ export default function App() {
               <div className="w-24 h-1 bg-gradient-to-r from-transparent via-pink-400 to-transparent mx-auto rounded-full mb-3 opacity-60"></div>
 
               <div className="inline-block px-4 py-1 rounded-full bg-pink-100/90 border border-pink-300 text-pink-800 text-xs font-bold mb-3 shadow-xs">
-                ✨ ئاهەنگی هاوسەرگیری ✨
+                ✨ ئاهەنگی مارەبڕین ✨
               </div>
 
               {/* Title Calligraphy: "نامەی مارەبڕین" */}
@@ -490,7 +506,7 @@ export default function App() {
                   {/* Days */}
                   <div className="bg-gradient-to-b from-white to-pink-50 p-2.5 rounded-xl border border-pink-200 shadow-xs">
                     <span className="text-xl sm:text-2xl font-bold text-pink-900 block font-sans">
-                      {String(timeLeft.days).padStart(2, '0')}
+                      {toKurdishDigits(String(timeLeft.days).padStart(2, '0'))}
                     </span>
                     <span className="text-[11px] text-neutral-500 font-medium">ڕۆژ</span>
                   </div>
@@ -498,7 +514,7 @@ export default function App() {
                   {/* Hours */}
                   <div className="bg-gradient-to-b from-white to-pink-50 p-2.5 rounded-xl border border-pink-200 shadow-xs">
                     <span className="text-xl sm:text-2xl font-bold text-pink-900 block font-sans">
-                      {String(timeLeft.hours).padStart(2, '0')}
+                      {toKurdishDigits(String(timeLeft.hours).padStart(2, '0'))}
                     </span>
                     <span className="text-[11px] text-neutral-500 font-medium">کاتژمێر</span>
                   </div>
@@ -506,7 +522,7 @@ export default function App() {
                   {/* Minutes */}
                   <div className="bg-gradient-to-b from-white to-pink-50 p-2.5 rounded-xl border border-pink-200 shadow-xs">
                     <span className="text-xl sm:text-2xl font-bold text-pink-900 block font-sans">
-                      {String(timeLeft.minutes).padStart(2, '0')}
+                      {toKurdishDigits(String(timeLeft.minutes).padStart(2, '0'))}
                     </span>
                     <span className="text-[11px] text-neutral-500 font-medium">خولەک</span>
                   </div>
@@ -514,7 +530,7 @@ export default function App() {
                   {/* Seconds */}
                   <div className="bg-gradient-to-b from-white to-pink-50 p-2.5 rounded-xl border border-pink-200 shadow-xs">
                     <span className="text-xl sm:text-2xl font-bold text-rose-600 block font-sans animate-pulse">
-                      {String(timeLeft.seconds).padStart(2, '0')}
+                      {toKurdishDigits(String(timeLeft.seconds).padStart(2, '0'))}
                     </span>
                     <span className="text-[11px] text-neutral-500 font-medium">چرکە</span>
                   </div>
